@@ -79,3 +79,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_role_display(self):
         return dict(self.ROLE_CHOICES).get(self.role,"Unknown")
+
+    def get_full_name(self):
+        return "%s %s" % (self.first_name, self.last_name)

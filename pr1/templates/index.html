@@ -1,9 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+ <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}My Project{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 </head>
+<body>
+  <header>
+    <h1>{% block header %}Welcome{% endblock %}</h1>
+  </header>
+
+   <main>
+    {% block content %}
+    <p>This is the default content. Replace this block with your own!</p>
+    {% endblock %}
+  </main>
+   <footer>
+    <p>&copy; {{ year }} My App. All rights reserved.</p>
+  </footer>
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
 <body>
 <p>hello world</p>
 

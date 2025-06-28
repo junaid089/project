@@ -12,16 +12,23 @@
   </header>
 
    <main>
+       <h1>Welcome, {{ user.username }}!</h1>
+
     {% block content %}
     <p>This is the default content. Replace this block with your own!</p>
     {% endblock %}
+    <p>Your registration was successful.</p>
+
   </main>
    <footer>
     <p>&copy; {{ year }} My App. All rights reserved.</p>
        <p>This is a an for a purpose</p>
 
-
+       <a href="index.html">index</a>
   </footer>
+
+
+
   <script src="{% static 'js/app.js' %}"></script>
 </body>
 </html>

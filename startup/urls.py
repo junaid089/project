@@ -13,5 +13,6 @@ urlpatterns=urlpatterns+[
 
     ('admin/', admin.site.urls),
     ('login/', Starter, namespace="starter"),
+    ("logout/",)
     ('starter/', second)
 ]

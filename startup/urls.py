@@ -12,6 +12,6 @@ from startup.models import Starter, second
 urlpatterns=urlpatterns+[
 
     ('admin/', admin.site.urls),
-    ('login/', Starter),
+    ('login/', Starter, namespace="starter"),
     ('starter/', second)
 ]

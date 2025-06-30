@@ -17,4 +17,4 @@ class SecondAdmin(admin.ModelAdmin):
 
 class newAdmin(admin.ModelAdmin):
     list_display = ('email', 'phone', 'role', 'is_staff', 'is_active')
-    list_display
+    list_display = ('email', 'phone', 'role', 'is_staff', 'is_active')

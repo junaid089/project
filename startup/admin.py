@@ -15,4 +15,5 @@ class SecondAdmin(admin.ModelAdmin):
     list_filter = ('is_staff', 'is_active')
     search_fields = ('email',)
 
-class
+class newAdmin(admin.ModelAdmin):
+    list_display = ('email', 'phone', 'role', 'is_staff', 'is_active')

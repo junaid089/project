@@ -16,3 +16,4 @@ class second(models.Model):
         return self.name
 
 class third(models.Model):
+    name = models.CharField(max_length=100)

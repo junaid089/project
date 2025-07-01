@@ -15,3 +15,4 @@ class second(models.Model):
     def __str__(self):
         return self.name
 
+class third(models.Model):

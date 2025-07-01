@@ -14,3 +14,11 @@ class second(models.Model):
 
     def __str__(self):
         return self.name
+
+class third(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.IntegerField()
+
+    def __str__(self):
+        return self.name

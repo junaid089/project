@@ -28,3 +28,4 @@ def index(request):
 def thirds(request):
     context = {
     }
+    return render(request, 'accounts/thirds.html', context)

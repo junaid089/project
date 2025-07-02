@@ -25,4 +25,4 @@ def index(request):
     }
     return render(request, 'accounts/index.html', context)
 
-def thirds()
+def thirds(request):

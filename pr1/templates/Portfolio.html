@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="section-header">
+                <h3>About Us</h3>
+            </div>
+            <div class="about-content">
+                <p>We are a passionate team dedicated to crafting innovative web solutions. Our mission is to help businesses thrive in the digital world by providing high-quality design and development services.</p>
+                <p>From concept to execution, we focus on user-centric design and robust functionality to deliver exceptional results.</p>
+                <!-- Optional: More details like team photos, company history -->
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="services-section">
+        <div class="container">
+            <div class="section-header">
+                <h3>Our Services</h3>
+            </div>
+            <div class="services-list">
+                <article class="service-item">
+                    <!-- Use an appropriate icon or image -->
+                    <!-- <i class="icon-web-design"></i> -->
+                    <h4>Web Design</h4>
+                    <p>Beautiful and functional websites tailored to your brand.</p>
+                </article>
+                <article class="service-item">
+                    <!-- <i class="icon-development"></i> -->
+                    <h4>Web Development</h4>
+                    <p>Robust and scalable web applications built with modern technologies.</p>
+                </article>
+                <article class="service-item">
+                    <!-- <i class="icon-seo"></i> -->
+                    <h4>SEO Optimization</h4>
+                    <p>Improve your search engine rankings and attract more organic traffic.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="portfolio-section">
+        <div class="container">
+            <div class="section-header">
+                <h3>Our Portfolio</h3>
+            </div>
+            <div class="portfolio-grid">
+                <figure class="portfolio-item">
+                    <img src="images/project-1.jpg" alt="Description of project 1">
+                    <figcaption>
+                        <h4>Project Title 1</h4>
+                        <p>Brief description of project 1</p>
+                        <a href="#" class="btn-small">View Project</a>
+                    </figcaption>
+                </figure>
+                <figure class="portfolio-item">
+                    <img src="images/project-2.jpg" alt="Description of project 2">
+                    <figcaption>
+                        <h4>Project Title 2</h4>
+                        <p>Brief description of project 2</p>
+                        <a href="#" class="btn-small">View Project</a>
+                    </figcaption>
+                </figure>
+                <figure class="portfolio-item">
+                    <img src="images/project-3.jpg" alt="Description of project 3">
+                    <figcaption>
+                        <h4>Project Title 3</h4>
+                        <p>Brief description of project 3</p>
+                        <a href="#" class="btn-small">View Project</a>
+                    </figcaption>
+                </figure>
+                <!-- Add more portfolio items as needed -->
+            </div>
+        </div>
+    </section>
+            <!--
+        CONTACT SECTION
+        How users can get in touch.
+    -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="section-header">
+                <h3>Get in Touch</h3>
+            </div>
+            <div class="contact-content">
+                <p>Have a project in mind? We'd love to hear from you!</p>
+                <form action="/submit-form" method="post" class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message:</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+                <!-- Optional: Contact details like phone, address, map -->
+                <div class="contact-info">
+                    <p>Email: <a href="mailto:info@awesomewebsite.com">info@awesomewebsite.com</a></p>
+                    <p>Phone: +1 234 567 890</p>
+                    <p>Address: 123 Awesome Street, City, Country</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!--
+    ========================================
+    FOOTER SECTION
+    ========================================
+    Copyright, secondary navigation, social links, etc.
+-->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="/privacy-policy">Privacy Policy</a></li>
+                    <li><a href="/terms-of-service">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h4>Follow Us</h4>
+                <ul>
+                    <li><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a></li>
+                    <li><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
+                    <li><a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; <span id="current-year"></span> My Awesome Website. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!--
+    JavaScript Files (Place at the end of body for faster page load)
+    Link your custom JS files here.
+-->
+<script src="js/main.js"></script>
+<!-- Example for Font Awesome icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<script>
+    // Simple script to update the current year in the footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
+
+
+
+
+</body>
+</html>

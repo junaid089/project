@@ -2,180 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Project Portfolio</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <header>
+        <h1>Your Project Title</h1>
+        <p>Your Name(s)</p>
+    </header>
 
+    <nav>
+        <ul>
+            <li><a href="#about">About Project</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#deliverables">Deliverables</a></li>
+            <li><a href="#impact">Impact</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
-    <section id="about" class="about-section">
-        <div class="container">
-            <div class="section-header">
-                <h3>About Us</h3>
+    <main>
+        <section id="about">
+            <h2>About the Project</h2>
+            <p>This section provides a concise overview of your project. What problem does it solve? What is its purpose?</p>
+            <!-- Add more details about your project -->
+        </section>
+
+        <section id="process">
+            <h2>Development Process</h2>
+            <p>Describe the steps you took to create your project. What methodologies did you use? What challenges did you face?</p>
+            <ul>
+                <li><strong>Phase 1:</strong> Research and Planning</li>
+                <li><strong>Phase 2:</strong> Design and Prototyping</li>
+                <li><strong>Phase 3:</strong> Development/Implementation</li>
+                <li><strong>Phase 4:</strong> Testing and Refinement</li>
+                <!-- Add more phases as needed -->
+            </ul>
+            <p><strong>Tools Used:</strong> HTML, CSS, JavaScript, [List other tools]</p>
+        </section>
+
+        <section id="deliverables">
+            <h2>Project Deliverables</h2>
+            <p>Showcase what you've created. Use images, descriptions, and links.</p>
+
+            <div class="deliverable-item">
+                <h3>Deliverable 1: [Name of Deliverable]</h3>
+                <img src="placeholder1.jpg" alt="Description of Deliverable 1" width="300">
+                <p>Description of Deliverable 1. Explain its features and significance.</p>
+                <!-- Optional: <a href="link-to-deliverable" target="_blank">View Deliverable</a> -->
             </div>
-            <div class="about-content">
-                <p>We are a passionate team dedicated to crafting innovative web solutions. Our mission is to help businesses thrive in the digital world by providing high-quality design and development services.</p>
-                <p>From concept to execution, we focus on user-centric design and robust functionality to deliver exceptional results.</p>
 
+            <div class="deliverable-item">
+                <h3>Deliverable 2: [Name of Deliverable]</h3>
+                <img src="placeholder2.jpg" alt="Description of Deliverable 2" width="300">
+                <p>Description of Deliverable 2. Explain its features and significance.</p>
+                <!-- Optional: <a href="link-to-deliverable" target="_blank">View Deliverable</a> -->
             </div>
-        </div>
-    </section>
 
-    <section id="services" class="services-section">
-        <div class="container">
-            <div class="section-header">
-                <h3>Our Services</h3>
-            </div>
-            <div class="services-list">
-                <article class="service-item">
+            <!-- Add more deliverables as needed -->
+        </section>
 
+        <section id="impact">
+            <h2>Results and Impact</h2>
+            <p>What did your project achieve? Quantify your results whenever possible.</p>
+            <ul>
+                <li>Achieved [X]% improvement in Y.</li>
+                <li>Resolved [Problem Z] for users.</li>
+                <li>Received positive feedback from [Target Audience].</li>
+                <!-- Add your specific results here -->
+            </ul>
+        </section>
 
-                    <h4>Web Design</h4>
-                    <p>Beautiful and functional websites tailored to your brand.</p>
-                </article>
-                <article class="service-item">
-
-                    <h4>Web Development</h4>
-                    <p>Robust and scalable web applications built with modern technologies.</p>
-                </article>
-                <article class="service-item">
-
-                    <h4>SEO Optimization</h4>
-                    <p>Improve your search engine rankings and attract more organic traffic.</p>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <section id="portfolio" class="portfolio-section">
-        <div class="container">
-            <div class="section-header">
-                <h3>Our Portfolio</h3>
-            </div>
-            <div class="portfolio-grid">
-                <figure class="portfolio-item">
-                    <img src="images/project-1.jpg" alt="Description of project 1">
-                    <figcaption>
-                        <h4>Project Title 1</h4>
-                        <p>Brief description of project 1</p>
-                        <a href="#" class="btn-small">View Project</a>
-                    </figcaption>
-                </figure>
-                <figure class="portfolio-item">
-                    <img src="images/project-2.jpg" alt="Description of project 2">
-                    <figcaption>
-                        <h4>Project Title 2</h4>
-                        <p>Brief description of project 2</p>
-                        <a href="#" class="btn-small">View Project</a>
-                    </figcaption>
-                </figure>
-                <figure class="portfolio-item">
-                    <img src="images/project-3.jpg" alt="Description of project 3">
-                    <figcaption>
-                        <h4>Project Title 3</h4>
-                        <p>Brief description of project 3</p>
-                        <a href="#" class="btn-small">View Project</a>
-                    </figcaption>
-                </figure>
-
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <div class="section-header">
-                <h3>Get in Touch</h3>
-            </div>
-            <div class="contact-content">
-                <p>Have a project in mind? We'd love to hear from you!</p>
-                <form action="/submit-form" method="post" class="contact-form">
-                    <div class="form-group">
-                        <label for="name">Name:</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message:</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
-                    <p>Email: <a href="mailto:info@awesomewebsite.com">info@awesomewebsite.com</a></p>
-                    <p>Phone: +1 234 567 890</p>
-                    <p>Address: 123 Awesome Street, City, Country</p>
-                </div>
-            </div>
-        </div>
-    </section>
-</main>
-
-
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-links">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li><a href="/privacy-policy">Privacy Policy</a></li>
-                    <li><a href="/terms-of-service">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div class="footer-social">
-                <h4>Follow Us</h4>
-                <ul>
-                    <li><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a></li>
-                    <li><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a></li>
-                    <li><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
-                    <li><a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-copyright">
-            <p>&copy; <span id="current-year"></span> My Awesome Website. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
-
-
-<script src="js/main.js"></script>
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
-<script>
-    // Simple script to update the current year in the footer
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-</script>
-
-<script type="module">
-
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
-
-
-
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAKz0x1jjkeSMX3IW9LrEBy-oWjWgjOr0w",
-    authDomain: "my-awesome-landing-page.firebaseapp.com",
-    projectId: "my-awesome-landing-page",
-    storageBucket: "my-awesome-landing-page.firebasestorage.app",
-    messagingSenderId: "910201708905",
-    appId: "1:910201708905:web:e54154ac9fa7dac0279df8",
-    measurementId: "G-X4SZNJNBSR"
-  };
-
-
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-
-
-
-</body>
-</html>
+        <section id="contact">
+            <h2>Contact Information</h2>
+            <p>Feel free to reach out for more information or discussion.</p>
+            <p><strong>Email:</strong> your.email@example.com</p>
+            <p><strong>LinkedIn:</strong> <a href="your-linkedin-profile-url" target="_blank">Your Name</a></p>
+            <!-- Add other contact details if applicable -->
+        </section>

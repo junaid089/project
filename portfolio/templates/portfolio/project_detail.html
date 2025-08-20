@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <article class="project-detail">
+        <h1>{{ project.title }}</h1>
+        
+        {% if project.image %}
+            <img src="{{ project.image.url }}" alt="Featured image for {{ project.title }}" class="project-detail-image">
+        {% endif %}
+        
+        <div class="project-info">
+            <h3>Description</h3>
+            <p>{{ project.description|linebreaks }}</p>
+
+            <h3>Technologies Used</h3>
+            <p>{{ project.technologies }}</p>
+
+            {% if project.link %}
+                <a href="{{ project.link }}" class="button" target="_blank" rel="noopener noreferrer">
+                    View Live Project
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="navigation-back">
+            <a href="{% url 'projects_app:project_list' %}">&larr; Back to All Projects</a>
+        </div>
+    </article>
+{% endblock content %}

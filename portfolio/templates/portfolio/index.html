@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Guide to Building a Django Portfolio</title>
+
+    <!-- TailwindCSS with Typography Plugin -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+
+    <!-- Prism.js CSS (Okaidia Theme) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <article class="prose lg:prose-xl prose-blue">
+            <header class="mb-12 border-b pb-8">
+                <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+                    Build a Django Portfolio Website
+                </h1>
+                <p class="mt-4 text-xl text-gray-500">
+                    A comprehensive, step-by-step guide to creating a clean and professional portfolio using the Django framework.
+                </p>
+            </header>
+
+            <!-- 1. Introduction -->
+            <section>
+                <h2>1. Introduction</h2>
+                <p>
+                    This guide will walk you through building a complete portfolio web application from scratch using Django. The goal is to create a dynamic site where you can showcase your projects. We will cover setting up the project, defining the data model, creating views and templates, and styling the frontend.
+                </p>
+            </section>
+
+            <!-- 2. Prerequisites & Setup -->
+            <section>
+                <h2>2. Prerequisites & Setup</h2>
+                <p>Before you begin, ensure you have the following installed:</p>
+                <ul>
+                    <li>Python 3.x</li>
+                    <li>pip (Python package installer)</li>
+                </ul>
+                <p>Follow these steps to set up your project environment and initial Django structure.</p>
+
+                <h4>Step 1: Create a Virtual Environment</h4>
+                <p>It's a best practice to create a virtual environment to isolate project dependencies.</p>
+                <pre><code class="language-bash"># Create a directory for your project and navigate into it
+mkdir django_portfolio && cd django_portfolio
+
+# Create a virtual environment
+python -m venv .venv
+
+# Activate the virtual environment
+# On Windows:
+.venv\Scripts\activate
+# On macOS/Linux:
+source .venv/bin/activate</code></pre>
+
+                <h4>Step 2: Install Django and Pillow</h4>
+                <p>With the virtual environment active, install Django and Pillow (for image handling).</p>
+                <pre><code class="language-bash">pip install Django Pillow</code></pre>
+
+                <h4>Step 3: Create the Django Project and App</h4>
+                <p>Now, create the main project container and a dedicated app for your portfolio.</p>
+                <pre><code class="language-bash"># Create the project (don't forget the '.' at the end)
+django-admin startproject portfolio_project .
+
+# Create the portfolio app
+python manage.py startapp portfolio</code></pre>
+
+                <h4>Step 4: Configure Settings</h4>
+                <p>Open <code>portfolio_project/settings.py</code> and add your new app to the <code>INSTALLED_APPS</code> list:</p>
+                <pre><code class="language-python">'portfolio',</code></pre>
+                <p>You should also configure your <a href="https://docs.djangoproject.com/en/stable/ref/settings/#templates" target="_blank" rel="noopener noreferrer">template directories</a> and <a href="https://docs.djangoproject.com/en/stable/howto/static-files/" target="_blank" rel="noopener noreferrer">static/media file settings</a>, but that is beyond the scope of this file-by-file guide.</p>
+            </section>
+
+            <!-- 3. Project Code -->
+            <section>
+                <h2>3. Project Code (File by File)</h2>
+                <p>Here is the complete code for each file in the project. We'll go through the models, views, URLs, templates, and styling.</p>
+
+                <!-- portfolio/models.py -->
+                <h3>portfolio/models.py</h3>
+                <p>This file defines the <code>Project</code> model, which represents the structure of your project data in the database. Each class attribute maps to a database field.</p>
+                <pre><code class="language-python"># portfolio/models.py
+
+from django.db import models
+
+class Project(models.Model):
+    title = models.CharField(max_length=100, help_text="The title of the project.")
+    description = models.TextField(help_text="A detailed description of the project.")
+    # The 'upload_to' path is relative to your MEDIA_ROOT setting
+    image = models.ImageField(upload_to='portfolio/images/', help_text="An image representing the project.")
+    technologies = models.CharField(max_length=200, help_text="Comma-separated list of technologies used.")
+    link = models.URLField(blank=True, help_text="A URL to the live project or its repository.")
+
+    class Meta:
+        verbose_name_plural = "Projects"
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+</code></pre>
+
+                <!-- portfolio/views.py -->
+                <h3>portfolio/views.py</h3>
+                <p>Views handle the logic for web requests. These functions fetch data from the database via the <code>Project</code> model and pass it to the templates for rendering.</p>
+                <pre><code class="language-python"># portfolio/views.py
+
+from django.shortcuts import render, get_object_or_404
+from .models import Project
+
+def project_list(request):
+    """
+    Displays a list of all projects.
+    """
+    projects = Project.objects.all()
+    context = {
+        'projects': projects
+    }
+    # Assumes a project-level 'templates' directory is configured in settings.py
+    return render(request, 'project_list.html', context)
+
+
+def project_detail(request, pk):
+    """
+    Displays a single project identified by its primary key (pk).
+    """
+    project = get_object_or_404(Project, pk=pk)
+    context = {
+        'project': project
+    }
+    return render(request, 'project_detail.html', context)
+</code></pre>
+
+                <!-- portfolio/urls.py -->
+                <h3>portfolio/urls.py</h3>
+                <p>This file contains URL patterns specific to the <code>portfolio</code> app. Creating this file makes your app's URLs modular and reusable. You will need to create this file manually inside your <code>portfolio</code> app directory.</p>
+                <pre><code class="language-python"># portfolio/urls.py
+
+from django.urls import path
+from . import views
+
+# Namespacing URLs for the 'portfolio' app
+app_name = 'portfolio'
+
+urlpatterns = [
+    # Root URL of the app maps to the project list view
+    path('', views.project_list, name='project_list'),
+
+    # URL for detail view, capturing the project's primary key
+    path('&lt;int:pk&gt;/', views.project_detail, name='project_detail'),
+]
+</code></pre>
+
+                <!-- portfolio_project/urls.py -->
+                <h3>portfolio_project/urls.py</h3>
+                <p>This is the main URL configuration file for the entire project. It delegates requests to the app-specific <code>urls.py</code> file we created above.</p>
+                <pre><code class="language-python"># portfolio_project/urls.py
+
+from django.contrib import admin
+from django.urls import path, include
+
+# Import settings and static for serving media files during development
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+
+    # Include URLs from the 'portfolio' app at the project's root
+    path('', include('portfolio.urls')),
+]
+
+# Helper for serving media files (e.g., project images) in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+</code></pre>
+
+                <!-- templates/base.html -->
+                <h3>templates/base.html</h3>
+                <p>This is the master template for the site. It defines the common HTML structure (header, footer) and a content block that other templates will override. Create a <code>templates</code> folder in your project root for this file.</p>
+                <pre><code class="language-django">{% raw %}{% load static %}
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;My Portfolio&lt;/title&gt;
+    &lt;link rel="stylesheet" href="{% static 'css/styles.css' %}"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;header class="site-header"&gt;
+        &lt;nav class="container"&gt;
+            &lt;a href="{% url 'portfolio:project_list' %}" class="nav-brand"&gt;Portfolio Home&lt;/a&gt;
+        &lt;/nav&gt;
+    &lt;/header&gt;
+
+    &lt;main class="container"&gt;
+        {% block content %}
+        &lt;!-- Child template content will be injected here --&gt;
+        {% endblock content %}
+    &lt;/main&gt;
+
+    &lt;footer class="site-footer"&gt;
+        &lt;div class="container"&gt;
+            &lt;p&gt;&copy; {% now "Y" %} Your Name. All Rights Reserved.&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/footer&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;{% endraw %}
+</code></pre>
+
+                <!-- templates/project_list.html -->
+                <h3>templates/project_list.html</h3>
+                <p>This template inherits from <code>base.html</code> and displays a grid of all your projects. It loops through the `projects` data passed from the view.</p>
+                <pre><code class="language-django">{% raw %}{% extends "base.html" %}
+
+{% block content %}
+    &lt;section class="project-gallery"&gt;
+        &lt;h1&gt;My Projects&lt;/h1&gt;
+        &lt;div class="project-grid"&gt;
+            {% for project in projects %}
+                &lt;div class="project-card"&gt;
+                    &lt;a href="{% url 'portfolio:project_detail' project.id %}"&gt;
+                        {% if project.image %}
+                            &lt;img src="{{ project.image.url }}" alt="Image for {{ project.title }}"&gt;
+                        {% endif %}
+                        &lt;div class="card-body"&gt;
+                            &lt;h3&gt;{{ project.title }}&lt;/h3&gt;
+                        &lt;/div&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+            {% empty %}
+                &lt;p&gt;There are no projects to display at this time.&lt;/p&gt;
+            {% endfor %}
+        &lt;/div&gt;
+    &lt;/section&gt;
+{% endblock content %}{% endraw %}
+</code></pre>
+
+                <!-- templates/project_detail.html -->
+                <h3>templates/project_detail.html</h3>
+                <p>This template displays all the information for a single project, including its image, description, and technologies used.</p>
+                <pre><code class="language-django">{% raw %}{% extends "base.html" %}
+
+{% block content %}
+    &lt;article class="project-detail"&gt;
+        &lt;h1&gt;{{ project.title }}&lt;/h1&gt;
+
+        {% if project.image %}
+            &lt;img src="{{ project.image.url }}" alt="Featured image for {{ project.title }}" class="project-detail-image"&gt;
+        {% endif %}
+
+        &lt;div class="project-info"&gt;
+            &lt;h3&gt;Description&lt;/h3&gt;
+            &lt;p&gt;{{ project.description|linebreaks }}&lt;/p&gt;
+
+            &lt;h3&gt;Technologies Used&lt;/h3&gt;
+            &lt;p&gt;{{ project.technologies }}&lt;/p&gt;
+
+            {% if project.link %}
+                &lt;a href="{{ project.link }}" class="button" target="_blank" rel="noopener noreferrer"&gt;
+                    View Live Project
+                &lt;/a&gt;
+            {% endif %}
+        &lt;/div&gt;
+
+        &lt;div class="navigation-back"&gt;
+            &lt;a href="{% url 'portfolio:project_list' %}"&gt;&larr; Back to All Projects&lt;/a&gt;
+        &lt;/div&gt;
+    &lt;/article&gt;
+{% endblock content %}{% endraw %}
+</code></pre>
+
+                <!-- static/css/styles.css -->
+                <h3>static/css/styles.css</h3>
+                <p>This CSS file provides a clean, modern, and professional design for the portfolio. Create a <code>static/css/</code> directory in your project root for this file.</p>
+                <pre><code class="language-css">/* Global Styles & Variables */
+:root {
+  --primary-color: #0d6efd;
+  --primary-hover: #0b5ed7;
+  --background-color: #f8f9fa;
+  --surface-color: #ffffff;
+  --text-color: #212529;
+  --text-light: #495057;
+  --border-color: #dee2e6;
+  --font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --box-shadow-subtle: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --box-shadow-lifted: 0 5px 15px rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+}
+html { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: inherit; }
+body { margin: 0; font-family: var(--font-family-sans-serif); background-color: var(--background-color); color: var(--text-color); line-height: 1.6; }
+a { color: var(--primary-color); text-decoration: none; transition: color 0.2s ease-in-out; }
+a:hover { color: var(--primary-hover); }
+img { max-width: 100%; height: auto; display: block; }
+.container { max-width: 1140px; margin-left: auto; margin-right: auto; padding-left: 1.5rem; padding-right: 1.5rem; }
+main.container { padding-top: 3rem; padding-bottom: 3rem; }
+
+/* Header & Footer */
+.site-header { background-color: var(--surface-color); padding: 1rem 0; border-bottom: 1px solid var(--border-color); box-shadow: var(--box-shadow-subtle); }
+.nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--text-color); }
+.site-footer { background-color: var(--surface-color); padding: 1.5rem 0; margin-top: 2rem; border-top: 1px solid var(--border-color); text-align: center; }
+
+/* Project Gallery (List View) */
+.project-gallery h1 { text-align: center; margin-bottom: 3rem; }
+.project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+.project-card { background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--box-shadow-subtle); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.project-card:hover { transform: translateY(-5px); box-shadow: var(--box-shadow-lifted); }
+.project-card a { display: block; color: inherit; }
+.project-card img { width: 100%; height: 220px; object-fit: cover; }
+.card-body { padding: 1.5rem; }
+.card-body h3 { margin: 0; font-size: 1.25rem; }
+
+/* Project Detail View */
+.project-detail { max-width: 800px; margin: 0 auto; background-color: var(--surface-color); padding: 2.5rem; border-radius: var(--border-radius); box-shadow: var(--box-shadow-lifted); }
+.project-detail-image { border-radius: var(--border-radius); margin-bottom: 2.5rem; }
+.project-info h3 { padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary-color); display: inline-block; margin-top: 1.5rem; margin-bottom: 1rem; }
+.navigation-back { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+.button { display: inline-block; padding: 0.75rem 1.5rem; background-color: var(--primary-color); color: #ffffff; border-radius: 5px; transition: background-color 0.2s; margin-top: 1rem; }
+.button:hover { background-color: var(--primary-hover); color: #ffffff; }
+</code></pre>
+            </section>
+
+            <!-- 4. Running the Application -->
+            <section>
+                <h2>4. Running the Application</h2>
+                <p>With the code in place, you need to create the database schema and run the development server.</p>
+
+                <h4>Step 1: Create Database Migrations</h4>
+                <p>This command analyzes the changes to your models and creates migration files.</p>
+                <pre><code class="language-bash">python manage.py makemigrations</code></pre>
+
+                <h4>Step 2: Apply Migrations to the Database</h4>
+                <p>This command applies the migrations, creating the necessary database tables.</p>
+                <pre><code class="language-bash">python manage.py migrate</code></pre>
+
+                <h4>Step 3: Create a Superuser (Optional)</h4>
+                <p>To add projects via the Django admin interface, create a superuser.</p>
+                <pre><code class="language-bash">python manage.py createsuperuser</code></pre>
+
+                <h4>Step 4: Run the Development Server</h4>
+                <p>Start the server to see your site in action.</p>
+                <pre><code class="language-bash">python manage.py runserver</code></pre>
+                <p>Your portfolio will be available at <a href="http://127.0.0.1:8000/" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8000/</a>. You can log into the admin panel at <code>/admin/</code> to start adding your projects.</p>
+            </section>
+
+            <!-- 5. Conclusion -->
+            <section>
+                <h2>5. Conclusion</h2>
+                <p>
+                    Congratulations! You have successfully built a functional portfolio website with Django. You have a solid foundation with a project list, detail pages, and a clean design.
+                </p>
+                <p>
+                    From here, you can customize the styles, add more fields to your <code>Project</code> model, or even add new features like a contact form or a blog.
+                </p>
+            </section>
+        </article>
+    </div>
+
+    <!-- Prism.js Core & Autoloader for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+</body>
+</html>

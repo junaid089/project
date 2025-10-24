@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="columns is-gapless" style="min-height:80vh;">
+    <!-- Sidebar -->
+    <aside class="column is-2 has-background-dark" style="padding:1.25rem;">
+        <div class="mb-4">
+            <a href="/" class="is-block has-text-white-bis" style="font-weight:700; font-size:1.1rem;">MyStudio</a>
+        </div>
+
+        <nav class="menu">
+            <ul class="menu-list">
+                <li><a class="has-text-white-bis" href="#">Explore</a></li>
+                <li><a class="has-text-white-bis" href="#">Subscribe</a></li>
+                <li class="mt-3 has-text-grey">AI Create</li>
+                <li><a class="has-text-white-bis" href="{% url 'editor:generator' %}">Image</a></li>
+                <li><a class="has-text-white-bis" href="{% url 'editor:upload' %}">Assets</a></li>
+                <li><a class="has-text-white-bis" href="#">Gallery</a></li>
+            </ul>
+        </nav>
+
+        <div class="mt-5">
+            <a class="button is-fullwidth is-dark is-outlined" href="#">API Access</a>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="column is-10" style="background:#0f1113; color:#e6e6e6; padding:1.5rem;">
+        <!-- Top bar / search & actions -->
+        <div class="level mb-4">
+            <div class="level-left">
+                <div class="level-item">
+                    <h1 class="title is-3">Editor</h1>
+                </div>
+                <div class="level-item">
+                    <a class="button is-link is-light" href="{% url 'editor:upload' %}"><i class="fa fa-plus"></i>&nbsp; Upload & Edit</a>
+                </div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                    <a class="button is-light" href="{% url 'editor:generator' %}">Generator</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs / categories -->
+        <div class="tabs is-toggle is-toggle-rounded is-small mb-4">
+            <ul>
+                {% for cat in categories|default:[] %}
+                    <li class="{% if forloop.first %}is-active{% endif %}"><a>{{ cat.name }}</a></li>
+                {% empty %}
+                    <li class="is-active"><a>Trending</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Banner / featured -->
+        <div class="box mb-5" style="background:#121318; border:none;">
+            <div class="columns is-vcentered">
+                <div class="column is-two-thirds">
+                    {% if featured_assets and featured_assets.0 %}
+                        {% with f=featured_assets.0 %}
+                            <h2 class="title is-4 has-text-white">{{ f.title|default:'Featured' }}</h2>
+                            <p class="has-text-grey-light">{{ f.description|default:'Top trending prompt & templates' }}</p>
+                        {% endwith %}
+                    {% else %}
+                        <h2 class="title is-4 has-text-white">Creator Partnership Program</h2>
+                        <p class="has-text-grey-light">Showcase your best work — get featured.</p>
+                    {% endif %}
+                </div>
+                <div class="column">
+                    {% if featured_assets and featured_assets.0 %}
+                        <figure class="image is-4by1">
+                            <img style="object-fit:cover; width:100%; height:120px; border-radius:6px;" src="{{ featured_assets.0.processed_image.url|default:featured_assets.0.image.url|default:featured_assets.0.file.url }}" alt="featured">
+                        </figure>
+                    {% else %}
+                        <figure class="image is-4by1">
+                            <img style="object-fit:cover; width:100%; height:120px; border-radius:6px;" src="/static/editor/images/banner-placeholder.jpg" alt="banner">
+                        </figure>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid of cards -->
+        <div class="columns is-multiline">
+            {% for a in assets %}
+            <div class="column is-one-quarter">
+                <div class="card" style="background:#0b0c0d; border-radius:8px; overflow:hidden;">
+                    <div class="card-image">
+                        <figure class="image is-4by3" style="margin:0;">
+                            {% if a.processed_image %}
+                                <img src="{{ a.processed_image.url }}" alt="{{ a.title }}" style="object-fit:cover; width:100%; height:200px;">
+                            {% elif a.image %}
+                                <img src="{{ a.image.url }}" alt="{{ a.title }}" style="object-fit:cover; width:100%; height:200px;">
+                            {% else %}
+                                <img src="{{ a.file.url }}" alt="{{ a.title }}" style="object-fit:cover; width:100%; height:200px;">
+                            {% endif %}
+                        </figure>
+                    </div>
+                    <div class="card-content" style="padding:0.75rem;">
+                        <div class="media">
+                            <div class="media-content">
+                                <p class="title is-6 has-text-white" style="margin-bottom:0.25rem;">{{ a.title|default:'Untitled' }}</p>
+                                <p class="subtitle is-7 has-text-grey-light">{{ a.created_at }}</p>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <a class="button is-small is-link" href="{% if a.processed_image %}{{ a.processed_image.url }}{% elif a.image %}{{ a.image.url }}{% else %}{{ a.file.url }}{% endif %}" target="_blank">View</a>
+                            <a class="button is-small" href="{% url 'editor:edit' a.id %}">Edit</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="column">
+                <div class="notification is-info">No assets yet. Upload one to get started.</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="level mt-4 has-text-grey-light">
+            <div class="level-left">
+                <div class="level-item">Showing {{ assets|length }} assets</div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">Ready</div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+{% endblock %}

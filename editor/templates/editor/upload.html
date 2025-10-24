@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="columns">
+    <div class="column is-half">
+        <div class="box">
+            <h3 class="title is-4">Upload & Manual Adjustments</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="field">
+                    {{ form.title.label_tag }}
+                    <div class="control">{{ form.title }}</div>
+                </div>
+
+                <div class="field">
+                    {{ form.image.label_tag }}
+                    <div class="control">{{ form.image }}</div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Brightness <span id="brightness-val">{{ form.brightness.value|default:1.0 }}</span></label>
+                    <div class="control">{{ form.brightness }}</div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Contrast <span id="contrast-val">{{ form.contrast.value|default:1.0 }}</span></label>
+                    <div class="control">{{ form.contrast }}</div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Saturation <span id="saturation-val">{{ form.saturation.value|default:1.0 }}</span></label>
+                    <div class="control">{{ form.saturation }}</div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-primary" type="submit"><i class="fa fa-upload"></i>&nbsp;Upload & Apply</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="column is-half">
+        <div class="box">
+            <h3 class="title is-5">Preview</h3>
+            <div id="preview-wrap">
+                <img id="preview-image" src="" alt="Preview" style="display:none; max-width:100%;" />
+                <p id="no-preview">Select an image to preview before upload.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

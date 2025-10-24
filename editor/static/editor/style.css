@@ -1,0 +1,5 @@
+/* Small custom styles for the editor app */
+#preview-wrap { text-align: center; }
+#preview-image { border: 1px solid #e6e6e6; border-radius: 6px; max-height:480px; }
+.range-input { width: 100%; }
+.card .image img { object-fit: cover; }

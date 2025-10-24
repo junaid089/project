@@ -19,10 +19,17 @@ from django.contrib import admin
 from django.urls import include, path
 
 from pr1 import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
+    path('', views.index, name='home'),
     path('admin/', admin.site.urls),
     path('register_user/', views.register_user, name='register_user'),
     path('login_user/', views.login_user, name='login_user'),
     path('portfolio/', include('portfolio.urls')),
+    path('editor/', include('editor.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

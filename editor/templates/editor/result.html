@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="columns">
+    <div class="column">
+        <h3 class="title is-5">Original</h3>
+        {% if asset.image.url %}
+            <figure class="image">
+                <img src="{{ asset.image.url }}" alt="original">
+            </figure>
+        {% endif %}
+    </div>
+    <div class="column">
+        <h3 class="title is-5">Processed</h3>
+        {% if asset.processed_image.url %}
+            <figure class="image">
+                <img src="{{ asset.processed_image.url }}" alt="processed">
+            </figure>
+        {% else %}
+            <div class="notification is-warning">No processed image available.</div>
+        {% endif %}
+    </div>
+</div>
+
+<p><a class="button is-light" href="{% url 'editor:home' %}">Back</a></p>
+
+{% endblock %}

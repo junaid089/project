@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="level">
+  <div class="level-left">
+    <div class="level-item">
+      <h1 class="title is-3">AI Generator (Demo)</h1>
+    </div>
+  </div>
+</div>
+
+<div class="box">
+  <form method="post" action="{% url 'editor:generator_create' %}">
+    {% csrf_token %}
+    <div class="field">
+      <label class="label">Prompt</label>
+      <div class="control">
+        <textarea class="textarea" name="prompt" placeholder="Describe the image you want..."></textarea>
+      </div>
+    </div>
+    <div class="field is-horizontal">
+      <div class="field-body">
+        <div class="field">
+          <label class="label">Count</label>
+          <div class="control">
+            <input class="input" name="count" type="number" value="1" min="1" max="6">
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Size</label>
+          <div class="control">
+            <div class="select">
+              <select name="size">
+                <option>512x512</option>
+                <option>768x768</option>
+                <option>1024x1024</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <button class="button is-primary" type="submit">Generate</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<h2 class="subtitle">Recent generated images</h2>
+<div class="columns is-multiline">
+  {% for a in recent %}
+  <div class="column is-one-quarter">
+    <div class="card">
+      <div class="card-image">
+        <figure class="image is-4by3">
+          <img src="{{ a.image.url }}" alt="{{ a.title }}">
+        </figure>
+      </div>
+      <div class="card-content">
+        <div class="content">
+          <p class="is-6">{{ a.title }}</p>
+          <a class="button is-small" href="{% url 'editor:edit' a.id %}">Edit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="column">
+    <div class="notification is-info">No generated images yet.</div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

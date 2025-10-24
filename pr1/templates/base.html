@@ -1,0 +1,50 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PR1 — Photo Editor</title>
+    <!-- Bulma for quick beautiful layout -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'editor/style.css' %}">
+  </head>
+  <body>
+    <section class="hero is-primary">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">PR1 Photo Editor</h1>
+          <h2 class="subtitle">Manual + AI-powered editing — development preview</h2>
+        </div>
+      </div>
+    </section>
+
+    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+      <div class="navbar-menu is-active container">
+        <div class="navbar-start">
+          <a class="navbar-item" href="/">Home</a>
+          <a class="navbar-item" href="/portfolio/">Portfolio</a>
+          <a class="navbar-item" href="/editor/">Editor</a>
+        </div>
+        <div class="navbar-end">
+          <a class="navbar-item" href="/admin/">Admin</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container" style="margin-top:1.5rem;">
+      {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>PR1 Photo Editor</strong> — Prototype. Built with Bulma, Pillow and optional AI integrations.
+        </p>
+      </div>
+    </footer>
+
+    <script src="{% static 'editor/editor.js' %}"></script>
+  </body>
+</html>

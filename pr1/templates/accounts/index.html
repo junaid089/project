@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="title">Welcome to PR1 Photo Editor</h1>
+    <p class="subtitle">Quick links to get started:</p>
+    <div class="buttons">
+      <a class="button is-primary" href="{% url 'editor:home' %}">Open Editor</a>
+      <a class="button is-link" href="{% url 'portfolio-home' %}">View Portfolio</a>
+      <a class="button" href="/admin/">Admin</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

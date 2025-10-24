@@ -1,0 +1,7 @@
+django==5.2.3
+Pillow>=9.0.0
+numpy
+opencv-python
+celery>=5.2.0
+redis
+requests

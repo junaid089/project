@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="level">
+    <div class="level-left">
+        <div class="level-item">
+            <h1 class="title is-3">Object Removal</h1>
+        </div>
+        <div class="level-item">
+            <a class="button is-link is-light" href="{% url 'editor:home' %}"><i class="fa fa-arrow-left"></i>&nbsp; Back</a>
+        </div>
+    </div>
+</div>
+
+<div class="box">
+    <p class="content">Upload an image and (optionally) a mask to remove unwanted objects. If OpenCV/numpy are not installed the view will show a message instead.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="field">
+            <label class="label">Image</label>
+            <div class="control">
+                {{ form.image }}
+            </div>
+            {{ form.image.errors }}
+        </div>
+
+        <div class="field">
+            <label class="label">Mask (optional)</label>
+            <div class="control">
+                {{ form.mask }}
+            </div>
+            <p class="help">Mask should be a PNG where the area to remove is white.</p>
+            {{ form.mask.errors }}
+        </div>
+
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-primary" type="submit">Remove Object</button>
+            </div>
+            <div class="control">
+                <a class="button is-light" href="{% url 'editor:home' %}">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

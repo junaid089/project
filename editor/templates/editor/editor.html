@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="level">
+  <div class="level-left">
+    <div class="level-item">
+      <h1 class="title is-3">Editor — {{ asset.title|default:'Untitled' }}</h1>
+    </div>
+    <div class="level-item">
+      <a class="button is-light" href="{% url 'editor:home' %}">Back</a>
+    </div>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column is-two-thirds">
+    <div id="stage-wrapper" style="border:1px solid #eee; background:#fff;">
+      <div id="stage-container"></div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="box">
+      <h2 class="subtitle">Adjustments</h2>
+      <div class="field">
+        <label>Exposure</label>
+        <input id="exposure" type="range" min="0" max="3" step="0.01" value="1">
+      </div>
+      <div class="field">
+        <label>Contrast</label>
+        <input id="contrast" type="range" min="0" max="3" step="0.01" value="1">
+      </div>
+      <div class="field">
+        <label>Saturation</label>
+        <input id="saturation" type="range" min="0" max="3" step="0.01" value="1">
+      </div>
+      <div class="field">
+        <label>Rotate</label>
+        <input id="rotate" type="range" min="-180" max="180" step="1" value="0">
+      </div>
+      <div class="buttons">
+        <button id="undo" class="button">Undo</button>
+        <button id="redo" class="button">Redo</button>
+        <button id="save-actions" class="button is-primary">Save</button>
+        <button id="export" class="button is-link">Export</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.EDITOR_ASSET_ID = {{ asset.id }};
+  window.EDITOR_EDITS = {{ edits|safe }};
+  window.EDITOR_IMAGE_URL = "{{ asset.image.url|default:''|escapejs }}";
+  window.EDITOR_PROCESSED_URL = "{{ asset.processed_image.url|default:''|escapejs }}";
+</script>
+<script src="https://unpkg.com/konva@8/konva.min.js"></script>
+<script src="{% static 'editor/editor.js' %}"></script>
+
+{% endblock %}

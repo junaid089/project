@@ -46,7 +46,7 @@
         <!-- Tabs / categories -->
         <div class="tabs is-toggle is-toggle-rounded is-small mb-4">
             <ul>
-                {% for cat in categories|default:[] %}
+                {% for cat in categories %}
                     <li class="{% if forloop.first %}is-active{% endif %}"><a>{{ cat.name }}</a></li>
                 {% empty %}
                     <li class="is-active"><a>Trending</a></li>
@@ -71,11 +71,19 @@
                 <div class="column">
                     {% if featured_assets and featured_assets.0 %}
                         <figure class="image is-4by1">
-                            <img style="object-fit:cover; width:100%; height:120px; border-radius:6px;" src="{{ featured_assets.0.processed_image.url|default:featured_assets.0.image.url|default:featured_assets.0.file.url }}" alt="featured">
+                            {% if featured_assets.0.processed_image %}
+                                <img style="object-fit:cover; width:100%; height:120px; border-radius:6px;" src="{{ featured_assets.0.processed_image.url }}" alt="featured">
+                            {% elif featured_assets.0.image %}
+                                <img style="object-fit:cover; width:100%; height:120px; border-radius:6px;" src="{{ featured_assets.0.image.url }}" alt="featured">
+                            {% elif featured_assets.0.file %}
+                                <img style="object-fit:cover; width:100%; height:120px; border-radius:6px;" src="{{ featured_assets.0.file.url }}" alt="featured">
+                            {% else %}
+                                <img style="object-fit:cover; width:100%; height:120px; border-radius:6px;" src="/static/editor/images/banner-placeholder.svg" alt="featured">
+                            {% endif %}
                         </figure>
                     {% else %}
                         <figure class="image is-4by1">
-                            <img style="object-fit:cover; width:100%; height:120px; border-radius:6px;" src="/static/editor/images/banner-placeholder.jpg" alt="banner">
+                            <img style="object-fit:cover; width:100%; height:120px; border-radius:6px;" src="/static/editor/images/banner-placeholder.svg" alt="banner">
                         </figure>
                     {% endif %}
                 </div>

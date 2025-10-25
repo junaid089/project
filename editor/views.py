@@ -14,8 +14,29 @@ from PIL import Image, ImageEnhance
 
 
 def home(request):
-    assets = Asset.objects.order_by('-created_at')[:20]
-    return render(request, 'editor/home.html', {'assets': assets})
+    # gather recent assets
+    all_assets = list(Asset.objects.order_by('-created_at'))
+    assets = all_assets[:24]
+
+    # derive simple categories from tags found on assets (first N unique)
+    tags = []
+    for a in all_assets:
+        try:
+            for t in (a.tags or []):
+                if t and t not in tags:
+                    tags.append(t)
+        except Exception:
+            continue
+    categories = [{'name': t} for t in tags[:8]]
+
+    # featured assets: simple heuristic, pick assets that have tag 'featured'
+    featured_assets = [a for a in all_assets if 'featured' in (a.tags or [])][:6]
+
+    return render(request, 'editor/home.html', {
+        'assets': assets,
+        'categories': categories,
+        'featured_assets': featured_assets,
+    })
 
 
 def upload_and_edit(request):
@@ -248,10 +269,29 @@ def create_generator_job(request):
 
     job = GeneratorJob.objects.create(prompt=prompt, count=count, size=size)
 
+    # store extra params on the job for later use (seed, negative_prompt, model)
+    extra = {}
+    for k in ('seed', 'negative_prompt', 'model'):
+        v = request.POST.get(k)
+        if v:
+            extra[k] = v
+    if extra:
+        # attach to job via params JSON field if available, else use metadata via setattr
+        try:
+            job.params = extra
+            job.save()
+        except Exception:
+            # older schema: ignore
+            pass
+
     # enqueue generation task (Celery)
+    ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
     try:
         from .tasks import hf_generate_task
         hf_generate_task.delay(job.id)
+        if ajax:
+            return JsonResponse({'status': 'enqueued', 'job_id': job.id})
+        return redirect('editor:generator')
     except Exception:
         # fallback to synchronous placeholder generator if Celery not available
         w, h = map(int, size.split('x')) if 'x' in size else (512, 512)
@@ -280,4 +320,27 @@ def create_generator_job(request):
         job.completed = True
         job.save()
 
-    return redirect('editor:generator')
+        if ajax:
+            # return result URLs
+            urls = [request.build_absolute_uri(a.image.url) for a in created_assets]
+            return JsonResponse({'status': 'done', 'job_id': job.id, 'results': urls})
+        return redirect('editor:generator')
+
+
+    def generator_status(request, job_id):
+        """Return JSON status for a generator job: completed flag and result URLs."""
+        job = get_object_or_404(GeneratorJob, pk=job_id)
+        completed = bool(job.completed)
+        assets = job.result_assets.all()
+        results = []
+        for a in assets:
+            url = None
+            if a.processed_image:
+                url = a.processed_image.url
+            elif a.image:
+                url = a.image.url
+            elif getattr(a, 'file', None):
+                url = a.file.url
+            if url:
+                results.append(request.build_absolute_uri(url))
+        return JsonResponse({'job_id': job.id, 'completed': completed, 'results': results})

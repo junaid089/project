@@ -54,6 +54,7 @@ class GeneratorJob(models.Model):
     prompt = models.TextField()
     count = models.PositiveSmallIntegerField(default=1)
     size = models.CharField(max_length=32, default='512x512')
+    params = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     completed = models.BooleanField(default=False)
     result_assets = models.ManyToManyField(Asset, blank=True, related_name='generator_jobs')

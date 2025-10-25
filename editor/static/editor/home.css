@@ -1,0 +1,24 @@
+/* Small visual tweaks for the editor home dashboard */
+
+body {
+  background: #0b0c0d;
+}
+
+/* Dark inputs */
+.input.is-dark, .button.is-dark {
+  background: #0f1113;
+  color: #e6e6e6;
+  border-color: #222425;
+}
+
+.card {
+  border: 1px solid #161718;
+}
+
+.card .title { color: #f5f5f5; }
+.card .subtitle { color: #9b9b9b; }
+
+.tag.is-danger { background: #ff3860; color: white; }
+
+/* make images nicely rounded inside cards */
+.card-image img { border-radius: 6px; }

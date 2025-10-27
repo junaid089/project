@@ -7,7 +7,6 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from .forms import UploadForm, ObjectRemovalForm
-from .forms import UploadForm, ObjectRemovalForm
 from .models import Asset, Version, GeneratorJob
 
 from PIL import Image, ImageEnhance
@@ -297,15 +296,26 @@ def create_generator_job(request):
         w, h = map(int, size.split('x')) if 'x' in size else (512, 512)
         created_assets = []
         for i in range(count):
-            img = Image.new('RGB', (w, h), color=(255, 255, 255))
+            # Draw a generator placeholder with darker background and centered text
             from PIL import ImageDraw, ImageFont
+            img = Image.new('RGB', (w, h), color=(24, 24, 24))
             draw = ImageDraw.Draw(img)
             try:
-                font = ImageFont.truetype('arial.ttf', 20)
+                font_size = max(16, w // 20)
+                font = ImageFont.truetype('arial.ttf', font_size)
             except Exception:
                 font = ImageFont.load_default()
-            text = (prompt[:120] + '...') if len(prompt) > 120 else prompt
-            draw.text((10, 10 + i*5), f"{text}\n({i+1}/{count})", fill=(0,0,0), font=font)
+            text = (prompt[:400] + '...') if len(prompt) > 400 else prompt
+            lines = f"{text}\n({i+1}/{count})"
+            try:
+                bbox = draw.multiline_textbbox((0, 0), lines, font=font, spacing=4)
+                tw = bbox[2] - bbox[0]
+                th = bbox[3] - bbox[1]
+            except Exception:
+                tw, th = draw.textsize(lines, font=font)
+            x = max(10, (w - tw) // 2)
+            y = max(10, (h - th) // 2)
+            draw.multiline_text((x, y), lines, fill=(230, 230, 230), font=font, align='center', spacing=4)
 
             filename = f"gen_{uuid.uuid4().hex[:8]}.jpg"
             out_dir = os.path.join(settings.MEDIA_ROOT, 'generated')
@@ -327,20 +337,79 @@ def create_generator_job(request):
         return redirect('editor:generator')
 
 
-    def generator_status(request, job_id):
-        """Return JSON status for a generator job: completed flag and result URLs."""
-        job = get_object_or_404(GeneratorJob, pk=job_id)
-        completed = bool(job.completed)
-        assets = job.result_assets.all()
-        results = []
-        for a in assets:
-            url = None
-            if a.processed_image:
-                url = a.processed_image.url
-            elif a.image:
-                url = a.image.url
-            elif getattr(a, 'file', None):
-                url = a.file.url
-            if url:
-                results.append(request.build_absolute_uri(url))
-        return JsonResponse({'job_id': job.id, 'completed': completed, 'results': results})
+def generator_status(request, job_id):
+    """Return JSON status for a generator job: completed flag and result URLs."""
+    job = get_object_or_404(GeneratorJob, pk=job_id)
+    completed = bool(job.completed)
+    assets = job.result_assets.all()
+    results = []
+    for a in assets:
+        url = None
+        if a.processed_image:
+            url = a.processed_image.url
+        elif a.image:
+            url = a.image.url
+        elif getattr(a, 'file', None):
+            url = a.file.url
+        if url:
+            results.append(request.build_absolute_uri(url))
+    return JsonResponse({'job_id': job.id, 'completed': completed, 'results': results})
+
+
+@require_POST
+def regenerate_preview(request, asset_id):
+    """Regenerate a single generated asset preview (AJAX).
+
+    Overwrites the existing image file with a visible preview (dark background, centered text).
+    Returns JSON with the new absolute URL on success.
+    """
+    asset = get_object_or_404(Asset, pk=asset_id)
+
+    # Only operate on generated/ files to be safe
+    try:
+        img_path = asset.image.path
+    except Exception:
+        return JsonResponse({'status': 'error', 'message': 'Asset has no file path'}, status=400)
+
+    # create preview
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+        with Image.new('RGB', (512, 512), color=(24, 24, 24)) as base:
+            draw = ImageDraw.Draw(base)
+            try:
+                font_size = max(14, 512 // 20)
+                font = ImageFont.truetype('arial.ttf', font_size)
+            except Exception:
+                font = ImageFont.load_default()
+
+            text = asset.title or os.path.splitext(os.path.basename(img_path))[0]
+            lines = f"{text}\n(regenerated)"
+            try:
+                bbox = draw.multiline_textbbox((0, 0), lines, font=font, spacing=4)
+                tw = bbox[2] - bbox[0]
+                th = bbox[3] - bbox[1]
+            except Exception:
+                tw, th = draw.textsize(lines, font=font)
+            x = max(10, (512 - tw) // 2)
+            y = max(10, (512 - th) // 2)
+            draw.multiline_text((x, y), lines, fill=(230, 230, 230), font=font, align='center', spacing=4)
+
+            # Attempt to preserve original size if possible
+            try:
+                # if original exists, use its size
+                from PIL import Image as PILImage
+                orig = PILImage.open(img_path)
+                w, h = orig.size
+                orig.close()
+                if (w, h) != (512, 512):
+                    base = base.resize((w, h), PILImage.Resampling.LANCZOS)
+            except Exception:
+                pass
+
+            base.save(img_path, format='JPEG', quality=90)
+
+        # Clear any cached fields and return new URL
+        asset.save()
+        return JsonResponse({'status': 'ok', 'url': request.build_absolute_uri(asset.image.url)})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

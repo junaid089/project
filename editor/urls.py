@@ -12,4 +12,5 @@ urlpatterns = [
     path('generator/', views.generator_page, name='generator'),
     path('generator/create/', views.create_generator_job, name='generator_create'),
     path('generator/status/<int:job_id>/', views.generator_status, name='generator_status'),
+    path('generator/regenerate/<int:asset_id>/', views.regenerate_preview, name='regenerate_preview'),
 ]

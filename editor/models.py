@@ -6,6 +6,7 @@ class Asset(models.Model):
     title = models.CharField(max_length=255, blank=True)
     image = models.ImageField(upload_to='uploads/')
     processed_image = models.ImageField(upload_to='processed/', null=True, blank=True)
+    preview_image = models.ImageField(upload_to='previews/', null=True, blank=True)
     tags = models.JSONField(default=list, blank=True)
     metadata = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(default=timezone.now)

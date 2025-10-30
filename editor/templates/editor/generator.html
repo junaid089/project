@@ -84,6 +84,7 @@
         <div class="content">
           <p class="is-6">{{ a.title }}</p>
           <a class="button is-small" href="{% url 'editor:edit' a.id %}">Edit</a>
+          <button class="button is-small regen-btn" data-asset-id="{{ a.id }}">Regenerate</button>
         </div>
       </div>
     </div>
@@ -139,6 +140,58 @@ function renderResults(urls) {
     container.insertBefore(col, container.firstChild);
   }
 }
+
+// CSRF helper for AJAX
+function getCookie(name) {
+  const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+  return v ? v.pop() : '';
+}
+
+// Attach click handlers for regenerate buttons (existing cards)
+function attachRegenHandlers() {
+  document.querySelectorAll('.regen-btn').forEach(btn => {
+    btn.removeEventListener('click', onRegenClick);
+    btn.addEventListener('click', onRegenClick);
+  });
+}
+
+async function onRegenClick(e) {
+  const btn = e.currentTarget;
+  const assetId = btn.getAttribute('data-asset-id');
+  if (!assetId) return;
+  btn.classList.add('is-loading');
+  const url = `{% url 'editor:regenerate_preview' 0 %}`.replace('/0/', '/' + assetId + '/');
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': getCookie('csrftoken')
+      }
+    });
+    if (!resp.ok) throw new Error('Request failed');
+    const j = await resp.json();
+    if (j.status === 'ok' && j.url) {
+      // update image element in the same card
+      const card = btn.closest('.card');
+      if (card) {
+        const img = card.querySelector('img');
+        if (img) {
+          img.src = j.url + (j.url.indexOf('?') === -1 ? '?' : '&') + 'v=' + Date.now();
+        }
+      }
+    } else {
+      alert('Regeneration failed: ' + (j.message || JSON.stringify(j)));
+    }
+  } catch (err) {
+    alert('Regeneration error: ' + err.message);
+  } finally {
+    btn.classList.remove('is-loading');
+  }
+}
+
+// run on initial load
+attachRegenHandlers();
 
 async function pollJob(jobId) {
   const statusUrl = `{% url 'editor:generator_status' 0 %}`.replace('/0/', '/' + jobId + '/');
